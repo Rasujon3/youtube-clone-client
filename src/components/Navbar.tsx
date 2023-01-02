@@ -5,8 +5,24 @@ import { BsYoutube, BsCameraVideo, BsBell } from "react-icons/bs";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoAppsSharp } from "react-icons/io5";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { changeSearchTerm, clearSearchTerm, clearVideos } from "../store";
+import { getSearchPageVideos } from "../store/reducers/getSearchPageVidoes";
 
 const Navbar = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispacth = useAppDispatch();
+  const searchTerm = useAppSelector((state) => state.youtubeApp.searchTerm);
+  const handleSearch = () => {
+    if (location.pathname !== "/search") {
+      navigate("/search");
+    } else {
+      dispacth(clearVideos());
+      dispacth(getSearchPageVideos(false));
+    }
+  };
+
   return (
     <div className="flex justify-between items-center px-14 h-14 bg-[#212121] opacity-95 top-0 z-50">
       <div className="flex gap-8 items-center text-2xl">
@@ -21,7 +37,12 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="flex items-center justify-center gap-5">
-        <form action="">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSearch();
+          }}
+        >
           <div className="flex bg-zinc-900 items-center h-10 px-4 pr-0">
             <div className="flex gap-4 items-center pr-5">
               <div>
@@ -30,9 +51,16 @@ const Navbar = () => {
               <input
                 type="text"
                 className="lg:w-96 md:w-48 sm:w-24 bg-zinc-900 focus:outline-none border-none"
+                value={searchTerm}
+                onChange={(e) => dispacth(changeSearchTerm(e.target.value))}
               />
 
-              <AiOutlineClose className="text-xl cursor-pointer" />
+              <AiOutlineClose
+                className={`text-xl cursor-pointer ${
+                  !searchTerm ? "invisible" : "visible"
+                }`}
+                onClick={() => dispacth(clearSearchTerm())}
+              />
             </div>
             <button className="h-10 w-16 flex items-center justify-center bg-zinc-800">
               <AiOutlineSearch className="text-xl" />
