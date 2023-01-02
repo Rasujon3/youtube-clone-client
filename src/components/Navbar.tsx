@@ -29,7 +29,7 @@ const Navbar = () => {
               </div>
               <input
                 type="text"
-                className="w-96 bg-zinc-900 focus:outline-none border-none"
+                className="lg:w-96 md:w-48 sm:w-24 bg-zinc-900 focus:outline-none border-none"
               />
 
               <AiOutlineClose className="text-xl cursor-pointer" />
